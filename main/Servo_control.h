@@ -16,9 +16,9 @@ void setupServo(){
 // 計算伺服馬達角度（可變更）
 void calculateServo(){
   for(int i=0;i<4;i++)
-    servoAngle[i] += servoSpeed - !servoSpeed;
+    servoAngle[i] += servoSpeed;
   if(servoAngle == 90 || servoAngle == 0)
-    servoSpeed = !servoSpeed;
+    servoSpeed = -servoSpeed;
 }
 
 // 更新伺服馬達
