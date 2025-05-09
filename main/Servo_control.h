@@ -6,7 +6,7 @@ Servo myServo[4];
 
 // 伺服馬達初始設定
 void setupServo(){
-  servoSpeed = 1;
+  servoSpeed = 3;
   for(int i=0;i<4;i++){
     myServo[i].attach(servoPins[i]);
     servoAngle[i] = 0;
@@ -17,12 +17,13 @@ void setupServo(){
 void calculateServo(){
   for(int i=0;i<4;i++)
     servoAngle[i] += servoSpeed;
-  if(servoAngle == 90 || servoAngle == 0)
+  if(servoAngle[0] == 90 || servoAngle[0] == 0)
     servoSpeed = -servoSpeed;
 }
 
 // 更新伺服馬達
 void updateServo(){
+  calculateServo();
   for(int i=0;i<4;i++){
     myServo[i].write(servoAngle[i]);
   }
