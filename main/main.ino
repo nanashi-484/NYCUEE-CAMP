@@ -1,10 +1,13 @@
+// 主程式
+
 #include "OLED_control.h"
 #include "Servo_control.h"
 #include "Button_read.h"
 #include "Photo_read.h"
-#include "Motor_control.h" 
+#include "Motor_control.h"
 
-void setup() {
+void setup()
+{
   Serial.begin(9600);
   setupOLED();
   delay(1000);
@@ -12,11 +15,12 @@ void setup() {
   setupPhoto();
   setupServo();
   setupButton();
-  
+
   pinMode(ledPin, OUTPUT);
 }
 
-void loop() {
+void loop()
+{
   digitalWrite(ledPin, HIGH);
 
   ReadButton();
@@ -24,5 +28,5 @@ void loop() {
   updateMotor();
   updateServo();
   updateOLED();
-//  delay(25);
+  //  delay(25);
 }
