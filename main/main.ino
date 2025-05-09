@@ -1,4 +1,4 @@
-// 主程式
+// 主程式1.1.0
 
 #include "OLED_control.h"
 #include "Servo_control.h"
