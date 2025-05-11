@@ -8,7 +8,7 @@ U8G2_SSD1306_128X64_NONAME_1_HW_I2C u8g2(U8G2_R0, /* reset=*/U8X8_PIN_NONE);
 // 外部定義
 #define logo_width 128
 #define logo_height 64
-const unsigned char gImage_logo[7206] = {
+const unsigned char logo_bits[] U8X8_PROGMEM = {
     0X00,
     0X01,
     0XF0,
