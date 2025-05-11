@@ -20,9 +20,8 @@ void ReadPhoto()
     threshold[t] = 63 * (threshold[t] / 64.0) + (CoinData[t]) / 64.0;
 
     if (CoinData[t] > threshold[t] * hardThreshold)
-      CoinActive[t] = 1;
-    else
-      CoinActive[t] = 0;
+      CoinActive[t] += 1;
+
     Serial.print("  Coin[");
     Serial.print(t);
     Serial.print("] : threshold = ");
