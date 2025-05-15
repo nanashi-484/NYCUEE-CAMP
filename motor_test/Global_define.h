@@ -32,4 +32,20 @@ bool CoinActive[4]; //硬幣是否落下
 #define switchPin 2
 #define ledPin 13
 
+// 讀取序列埠數值成整數
+void serialRead(int& value){
+    value = 0;
+    String temp_string = "";
+    while (Serial.available() > 0) {
+        char incomingByte = Serial.read();
+        // 如果收到換行符號，結束讀取
+        if (incomingByte == '\n') {
+            break;
+        }
+        // 將字元加入字串
+        temp_string += incomingByte;
+    }
+    value = temp_string.toInt();
+}
+
 #endif

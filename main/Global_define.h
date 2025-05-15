@@ -1,6 +1,10 @@
 #ifndef VALUE
 #define VALUE
 
+// 主程式
+int task_Timer = 0;// 主程式任務計時器;
+const int task_Frequency = 8;// 設定高頻任務相對低頻任務的觸發數
+
 // 定義伺服馬達
 #define vibrationPin A1
 int servoPins[] = {3, 5, 6, 10};
@@ -24,9 +28,10 @@ bool button_currentValue[buttonCount];
 // 光敏腳位 & 數據
 const int photoPins[] = {A2, A3, A6, A7};
 float threshold[4]; //自動門檻
-const float hardThreshold = 0.4; //需要高平均 (1+hardThreshold) 倍才會觸發
-int CoinData[4];
+const float hardThreshold = 1.3; //需要高平均 (hardThreshold) 倍才會觸發
+int PhotoData[4]; //光敏電阻當下的值
 bool CoinActive[4]; //硬幣是否落下
+int CoinTotal[4]; //盒內總硬幣數
 
 // 微動開關（尚未使用）
 #define switchPin 2

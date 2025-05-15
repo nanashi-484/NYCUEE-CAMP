@@ -8,7 +8,7 @@
 
 void setup()
 {
-  Serial.begin(9600);
+  Serial.begin(38400);
   setupOLED();
   delay(1000);
   setupMotor();
@@ -17,16 +17,27 @@ void setup()
   setupButton();
 
   pinMode(ledPin, OUTPUT);
+  digitalWrite(ledPin, HIGH);
 }
 
 void loop()
 {
-  digitalWrite(ledPin, HIGH);
+  if(!task_Timer){ //低頻任務
+    updateMotor();
+    updateServo();
+    updateOLED();
+    ReadPhoto_LOW();
+  }
 
+  // 高頻任務
   ReadButton();
-  ReadPhoto();
-  updateMotor();
-  updateServo();
-  updateOLED();
+  ReadPhoto_HIGH();
+
+  if(task_Timer == task_Frequency){
+    task_Timer = 0;
+  }
+  else{
+    task_Timer ++ ;
+  }
   //  delay(25);
 }

@@ -33,7 +33,7 @@ void updateOLED()
 
     for (int i = 0; i < 4; i++)
     {
-      snprintf(buffer, sizeof(buffer), "%s: %d", labels[i], CoinData[i]);
+      snprintf(buffer, sizeof(buffer), "%s: %d", labels[i], CoinTotal[i]);
       u8g2.drawStr(0, 15 + i * 15, buffer);
     }
   } while (u8g2.nextPage());
