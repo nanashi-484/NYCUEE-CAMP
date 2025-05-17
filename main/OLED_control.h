@@ -33,6 +33,7 @@ void updateOLED()
   char *labels[MAX_NUMBER_OF_LINE];
   OLED_message(labels);
 
+  u8g2.clearBuffer();
   u8g2.firstPage();
   do
   {
@@ -42,6 +43,8 @@ void updateOLED()
       u8g2.drawStr(0, 15 + i * 15, labels[i]);
     }
   } while (u8g2.nextPage());
+  u8g2.sendBuffer();
+
 }
 
 // 決定OLED應該顯示的訊息
