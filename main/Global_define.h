@@ -1,12 +1,19 @@
 #ifndef VALUE
 #define VALUE
 
-#define DATAOUT 11     // mosi
-#define DATAIN 12      // miso
-#define SPICLOCK 13    // sck
-#define SLAVESELECT 10 // ss
+// 主程式
+enum Mode
+{
+    ERROR,          // 當發生程序無法繼續運行的錯誤，進入ERROR
+    COMMUNICATION,  // 需要與IDS1760 SPI通訊時
+    WAITING_COMMAND // 等待使用者輸入
+};
+Mode mode = WAITING_COMMAND;
 
-// opcodes
+int task_Timer = 0;           // 主程式任務計時器;
+const int task_Frequency = 8; // 設定高頻任務相對低頻任務的觸發數
+
+// SPI通訊
 #define PU 0x01
 #define STOP 0x02
 #define RESET 0x03
@@ -36,19 +43,7 @@
 
 #define WAIT_TIME 10 // waiting time (ms) after SS=LOW at least 500ns
 #define WAIT_TIME2 100
-// 主程式
-enum Mode
-{
-    ERROR,          // 當發生程序無法繼續運行的錯誤，進入ERROR
-    COMMUNICATION,  // 需要與IDS1760 SPI通訊時
-    WAITING_COMMAND // 等待使用者輸入
-};
-Mode mode = WAITING_COMMAND;
 
-int task_Timer = 0;           // 主程式任務計時器;
-const int task_Frequency = 8; // 設定高頻任務相對低頻任務的觸發數
-
-// SPI通訊
 const int SS_Pin = 10;
 const int MISO_Pin = 12;
 const int MOSI_Pin = 11;
