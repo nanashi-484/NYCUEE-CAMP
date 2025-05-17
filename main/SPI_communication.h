@@ -1,22 +1,15 @@
 #include "Global_define.h"
 #include <SPI.h>
-
-void resetISD1760();
-void powerUpISD1760();
+void playFromTo(uint16_t startAddr, uint16_t endAddr);
+void recordFromTo(uint16_t startAddr, uint16_t endAddr);
+void sendStop();
 
 void setupSPI() {
     pinMode(SS_Pin, OUTPUT);
-    pinMode(MOSI_Pin, OUTPUT);
-    pinMode(MISO_Pin, INPUT);
-    pinMode(SCK_Pin, OUTPUT);
     digitalWrite(SS_Pin, HIGH);
     SPI.begin();
-  
-    // 重置 ISD1760
-    resetISD1760();
-    
-    // 上電 ISD1760
-    powerUpISD1760();
+    SPI.beginTransaction(SPISettings(1000000, MSBFIRST, SPI_MODE0));
+
 }
 
 void receiveCommand() {
@@ -31,45 +24,83 @@ void receiveCommand() {
 }
 
 void sendCommand() {
-    SPI.beginTransaction(SPISettings(500000, LSBFIRST, SPI_MODE3));
-    digitalWrite(SS_Pin, LOW);
-    SPI.transfer(PU);
-    //Serial.println(command_current);
-    uint8_t a = SPI.transfer(command_current);
-    Serial.println(a);
 
-    bool* tempBool;
-//    intToBinary(a,tempBool,16);
-    char* tempChar;
-//    binaryArrayToString(tempBool,16,tempChar);
-//    Serial.println(tempChar);
-
-    // Serial.println(command_current);
-    // Serial.println(printBinary(10));
+    if(command_current == PLAY){
+        playFromTo(0x0000, 0x0020); // 播放從 0x0000 到 0xFFFF 的語音
+    }
+    else if(command_current == REC){
+        recordFromTo(0x0000, 0x0020); // 錄音從 0x0000 到 0xFFFF 的語音
+    }
+    else if(command_current == STOP){
+        sendStop();
+    }
+    else if(command_current == RESET){
+        
+    }
+    else if(command_current == FWD){
+       
+    }
+    else if(command_current == RD_STATUS){
+    
+    }
     delay(10);  // 確保指令傳輸完成
-    digitalWrite(SS_Pin, HIGH);
-    SPI.endTransaction();
-    delay(1000);
+
     mode = WAITING_COMMAND;
 }
 
+void recordFromTo(uint16_t startAddr, uint16_t endAddr) {
+  digitalWrite(SS_PIN, LOW);
+  delayMicroseconds(5);
 
-void resetISD1760() {
-  digitalWrite(SS_Pin, LOW);
-  SPI.beginTransaction(SPISettings(500000, LSBFIRST, SPI_MODE3));
-  SPI.transfer(RESET);
-  SPI.endTransaction();
+  SPI.transfer(0x81); // SET_REC 指令
+  SPI.transfer(0x00); // 保留位
+
+  SPI.transfer(startAddr & 0xFF);           // S7:S0
+  SPI.transfer((startAddr >> 8) & 0x07);    // S10:S8
+
+  SPI.transfer(endAddr & 0xFF);             // E7:E0
+  SPI.transfer((endAddr >> 8) & 0x07);      // E10:E8
+
+  delayMicroseconds(5);
   digitalWrite(SS_Pin, HIGH);
-  
-  delay(100); // 等待設備重置完成
+
+  Serial.print("開始錄音：從 0x");
+  Serial.print(startAddr, HEX);
+  Serial.print(" 到 0x");
+  Serial.println(endAddr, HEX);
 }
 
-void powerUpISD1760() {
+void playFromTo(uint16_t startAddr, uint16_t endAddr) {
   digitalWrite(SS_Pin, LOW);
-  SPI.beginTransaction(SPISettings(500000, LSBFIRST, SPI_MODE3));
-  SPI.transfer(PU);  // 發送上電指令
-  SPI.endTransaction();
-  digitalWrite(SS_Pin, HIGH);
-  
-  delay(30); // 等待設備上電完成
+  delayMicroseconds(5);
+
+  SPI.transfer(0x80); // SET_PLAY 指令
+  SPI.transfer(0x00); // 保留位
+
+  SPI.transfer(startAddr & 0xFF);
+  SPI.transfer((startAddr >> 8) & 0x07);
+
+  SPI.transfer(endAddr & 0xFF);
+  SPI.transfer((endAddr >> 8) & 0x07);
+
+  delayMicroseconds(5);
+  digitalWrite(SS_PIN, HIGH);
+
+  Serial.print("播放語音：從 0x");
+  Serial.print(startAddr, HEX);
+  Serial.print(" 到 0x");
+  Serial.println(endAddr, HEX);
+}
+
+void sendStop() {
+  digitalWrite(SS_Pin, LOW);
+  delayMicroseconds(5);
+
+  SPI.transfer(0x02); // STOP 指令
+  SPI.transfer(0x00); // 第二個 byte 固定為 0x00
+
+  delayMicroseconds(5);
+  digitalWrite(SS_PIN, HIGH);
+
+  Serial.println("🛑 已發送 STOP 指令，中斷播放或錄音");
 }
