@@ -47,7 +47,7 @@ void sendCommand() {
     
     }
     delay(10);  // 確保指令傳輸完成
-
+    delay(1000); // 避免高頻操作
     mode = WAITING_COMMAND;
 }
 
