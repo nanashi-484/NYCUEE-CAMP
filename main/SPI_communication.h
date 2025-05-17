@@ -3,7 +3,7 @@
 void playFromTo(uint16_t startAddr, uint16_t endAddr);
 void recordFromTo(uint16_t startAddr, uint16_t endAddr);
 void sendStop(), play(), Record();
-bool isRecording();
+bool isRecording(), isPlaying();
 void fullReset();
 uint16_t readPlayPointer();
 byte checkMemoryStatus();
@@ -236,4 +236,24 @@ uint16_t readPlayPointer() {
   Serial.print("📍 放音指針地址：0x");
   Serial.println(pointer, HEX);
   return pointer;
+}
+
+bool isPlaying() {
+  digitalWrite(SS_Pin, LOW);
+  delayMicroseconds(5);
+
+  SPI.transfer(0x05);     // RD_STATUS 指令
+  SPI.transfer(0x00);     // 第二 byte 固定
+
+  byte sr0 = SPI.transfer(0x00);  // SR0（可略過）
+  byte sr1 = SPI.transfer(0x00);  // SR1（我們要用這個）
+
+  digitalWrite(SS_Pin, HIGH);
+
+  bool playing = (sr1 & 0b00000100);  // bit2 = 1 表示正在播放
+
+  Serial.print("播放狀態：");
+  Serial.println(playing ? "正在播放 🎵" : "未播放 💤");
+
+  return playing;
 }

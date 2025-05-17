@@ -161,7 +161,7 @@ char* CommandToText() {
     default:
         textOutput = "Unknown Command";  // 預設情況，返回未知指令的字串
         //errorCode = 1;
-       // mode = ERROR_MODE;
+        //mode = ERROR_MODE;
         break;
   }
   return textOutput;  // 返回轉換後的文字
