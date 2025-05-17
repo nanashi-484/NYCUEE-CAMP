@@ -1,5 +1,7 @@
 #ifndef VALUE
 #define VALUE
+#include <stdio.h>
+#include <string.h>
 
 // 主程式
 enum Mode
@@ -59,6 +61,10 @@ const int buttonCount = 6;
 bool lastButtonStates[buttonCount];
 bool button_currentValue[buttonCount];
 
+//================================================================
+//=========================函數定義================================
+//================================================================
+
 // 讀取序列埠數值成整數
 void serialRead(int &value)
 {
@@ -76,6 +82,61 @@ void serialRead(int &value)
         temp_string += incomingByte;
     }
     value = temp_string.toInt();
+}
+
+// 函數：合併兩個字串並返回結果
+// 參數：
+//   dest - 目標字串陣列（必須有足夠空間）
+//   str1 - 第一個輸入字串
+//   str2 - 第二個輸入字串
+// 返回值：合併後的字串（即 dest 的指標）
+char* concatenateStrings(char* dest, const char* str1, const char* str2) {
+    // 先將 str1 複製到 dest 中
+    strcpy(dest, str1);
+//    dest[] = '\0';  // 確保字串結尾
+    
+    // 將 str2 附加到 dest 後面，限制附加長度以避免溢位
+    strcat(dest, str2);
+    
+    return dest;
+}
+
+void intToBinary(int num, bool binaryArray[], int arraySize) {
+    // 處理負數的情況，先轉為無符號整數以避免問題
+    unsigned int unum = (unsigned int)num;
+    
+    // 初始化陣列為 0
+    for (int i = 0; i < arraySize; i++) {
+        binaryArray[i] = 0;
+    }
+    
+    // 從最高位開始計算二進制
+    int index = arraySize - 1;
+    if (num == 0) {
+        binaryArray[index] = 0;
+        return;
+    }
+    
+    // 對負數特別處理（使用補碼表示）
+    if (num < 0) {
+        unum = ~unum + 1; // 取得二進制補碼
+    }
+    
+    // 轉換為二進制
+    while (unum > 0 && index >= 0) {
+        binaryArray[index] = unum % 2;
+        unum /= 2;
+        index--;
+    }
+}
+
+// 將二進制陣列轉為字串的函式
+// 參數：binaryArray 是二進制陣列，size 是陣列大小，binaryString 是用來儲存結果的字串
+void binaryArrayToString(int binaryArray[], int size, char binaryString[]) {
+    for (int i = 0; i < size; i++) {
+        binaryString[i] = binaryArray[i] ? '1' : '0'; // 將 0 轉為 '0'，1 轉為 '1'
+    }
+    binaryString[size] = '\0'; // 在字串結尾加上空字元，表示字串結束
 }
 
 // 將int轉為binary的string
