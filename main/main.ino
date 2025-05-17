@@ -4,13 +4,14 @@
 
 void setup(){
   Serial.begin(9600);
-  //setupOLED();
+  setupOLED();
   setupButton();
   setupSPI();
 }
 
 void loop(){
   if (mode == COMMUNICATION){
+    updateOLED();
     /*
     ReadButton();
     if (button_currentValue[1]) { // 偵測 STOP 鍵
@@ -19,13 +20,14 @@ void loop(){
       updateOLED();
     }*/
     sendCommand();
-    updateOLED();
+    delay(1000);
   }
 
   if (mode == WAITING_COMMAND){
+    updateOLED();
     ReadButton();
     receiveCommand();
-    updateOLED();
+    delay(50);
   }
 
   if (mode == ERROR_MODE){
