@@ -12,6 +12,7 @@ void setup(){
 void loop(){
   if (mode == COMMUNICATION){
     sendCommand();
+    updateOLED();
   }
 
   if (mode == WAITING_COMMAND){
