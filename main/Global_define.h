@@ -133,11 +133,11 @@ void intToBinary(int num, bool binaryArray[], int arraySize) {
 
 // 將二進制陣列轉為字串的函式
 // 參數：binaryArray 是二進制陣列，size 是陣列大小，binaryString 是用來儲存結果的字串
-void binaryArrayToString(int binaryArray[], int size, char binaryString[]) {
-    for (int i = 0; i < size; i++) {
+void binaryArrayToString(bool binaryArray[], int arraySize, char binaryString[]) {
+    for (int i = 0; i < arraySize; i++) {
         binaryString[i] = binaryArray[i] ? '1' : '0'; // 將 0 轉為 '0'，1 轉為 '1'
     }
-    binaryString[size] = '\0'; // 在字串結尾加上空字元，表示字串結束
+    binaryString[arraySize] = '\0'; // 在字串結尾加上空字元，表示字串結束
 }
 
 // 將int轉為binary的string
