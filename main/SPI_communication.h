@@ -11,7 +11,7 @@ void setupSPI() {
     pinMode(SS_Pin, OUTPUT);
     digitalWrite(SS_Pin, HIGH);
     SPI.begin();
-    SPI.beginTransaction(SPISettings(100000, MSBFIRST, SPI_MODE2));
+    SPI.beginTransaction(SPISettings(100000, MSBFIRST, SPI_MODE3));
 
     fullReset(); // 初始化時全清除
     delay(1000);

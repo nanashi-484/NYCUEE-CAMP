@@ -6,7 +6,7 @@
 U8G2_SSD1306_128X64_NONAME_1_HW_I2C u8g2(U8G2_R0, /* reset=*/U8X8_PIN_NONE);
 
 // OLED 顯示資訊
-#define USED_OLED_FONT u8g2_font_5x7_tf // 定義使用的字體
+#define USED_OLED_FONT u8g2_font_6x10_tf // 定義使用的字體
 const int MAX_NUMBER_OF_LINE = 4; // 最大顯示行數
 
 char* CommandToText();
@@ -20,6 +20,8 @@ void setupOLED()
   Wire.begin();
   u8g2.begin();
   u8g2.setFont(USED_OLED_FONT);
+  Serial.println(u8g2.getDisplayWidth());
+  Serial.println(u8g2.getDisplayHeight());
   u8g2.firstPage();
   do
   {
@@ -30,10 +32,9 @@ void setupOLED()
 // 顯示 OLED 畫面
 void updateOLED()
 {
-  char *labels[MAX_NUMBER_OF_LINE];
+  char *labels[MAX_NUMBER_OF_LINE] = {"","","",""};
   OLED_message(labels);
 
-  u8g2.clearBuffer();
   u8g2.firstPage();
   do
   {
@@ -43,15 +44,13 @@ void updateOLED()
       u8g2.drawStr(0, 15 + i * 15, labels[i]);
     }
   } while (u8g2.nextPage());
-  u8g2.sendBuffer();
-
 }
 
 // 決定OLED應該顯示的訊息
 void OLED_message(char *labels[MAX_NUMBER_OF_LINE]){
   switch (mode){
     case COMMUNICATION:
-      labels[0] = "COMMUNICATING... ";
+      labels[0] = "Comunicating... ";
       // concatenateStrings(labels[1],"  command: ",CommandToText());
       concatenateStrings(labels[1],"  command: ",CommandToText());
       labels[2] = "INSTRUCT: ";
@@ -61,9 +60,11 @@ void OLED_message(char *labels[MAX_NUMBER_OF_LINE]){
     
     case WAITING_COMMAND:
       labels[0] = "STATUS: ";
-      labels[1] = ".e";
-      labels[2] = "  Ready!";
-      labels[3] = ".e";
+      labels[1] = "----------------------------";
+      
+      labels[2] = "       Ready!";
+      
+      labels[3] = "----------------------------";
       break;
     
     case ERROR_MODE:
