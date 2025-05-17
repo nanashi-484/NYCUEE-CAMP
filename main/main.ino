@@ -1,7 +1,11 @@
 #include "SPI_communication.h"
 #include "Button_read.h"
 #include "OLED_control.h"
-
+int freeRam() {
+  extern int __heap_start, *__brkval; 
+  int v; 
+  return (int) &v - (__brkval == 0 ? (int) &__heap_start : (int) __brkval); 
+}
 void setup(){
   Serial.begin(9600);
   setupOLED();
@@ -11,6 +15,7 @@ void setup(){
 
 void loop(){
   if (mode == COMMUNICATION){
+    Serial.println(freeRam());
     updateOLED();
     /*
     ReadButton();
@@ -18,14 +23,15 @@ void loop(){
       command_current = STOP;
       sendCommand();
       updateOLED();
-    }*/
+    }
+    */
     sendCommand();
     delay(1000);
   }
 
   if (mode == WAITING_COMMAND){
-    updateOLED();
     ReadButton();
+    updateOLED();
     receiveCommand();
     delay(50);
   }
