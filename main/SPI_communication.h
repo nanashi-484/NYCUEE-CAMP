@@ -3,13 +3,16 @@
 void playFromTo(uint16_t startAddr, uint16_t endAddr);
 void recordFromTo(uint16_t startAddr, uint16_t endAddr);
 void sendStop();
+bool isRecording();
+void fullReset();
 
 void setupSPI() {
     pinMode(SS_Pin, OUTPUT);
     digitalWrite(SS_Pin, HIGH);
     SPI.begin();
     SPI.beginTransaction(SPISettings(1000000, MSBFIRST, SPI_MODE0));
-
+    fullReset(); // 初始化時全清除
+    delay(1000);
 }
 
 void receiveCommand() {
@@ -26,10 +29,10 @@ void receiveCommand() {
 void sendCommand() {
 
     if(command_current == PLAY){
-        playFromTo(0x0000, 0x0020); // 播放從 0x0000 到 0xFFFF 的語音
+        playFromTo(0x0020, 0x0200); // 播放從 0x0000 到 0xFFFF 的語音
     }
     else if(command_current == REC){
-        recordFromTo(0x0000, 0x0020); // 錄音從 0x0000 到 0xFFFF 的語音
+        recordFromTo(0x0020, 0x0200); // 錄音從 0x0000 到 0xFFFF 的語音
     }
     else if(command_current == STOP){
         sendStop();
@@ -38,7 +41,7 @@ void sendCommand() {
         
     }
     else if(command_current == FWD){
-       
+       isRecording();
     }
     else if(command_current == RD_STATUS){
     
@@ -49,7 +52,7 @@ void sendCommand() {
 }
 
 void recordFromTo(uint16_t startAddr, uint16_t endAddr) {
-  digitalWrite(SS_PIN, LOW);
+  digitalWrite(SS_Pin, LOW);
   delayMicroseconds(5);
 
   SPI.transfer(0x81); // SET_REC 指令
@@ -84,7 +87,7 @@ void playFromTo(uint16_t startAddr, uint16_t endAddr) {
   SPI.transfer((endAddr >> 8) & 0x07);
 
   delayMicroseconds(5);
-  digitalWrite(SS_PIN, HIGH);
+  digitalWrite(SS_Pin, HIGH);
 
   Serial.print("播放語音：從 0x");
   Serial.print(startAddr, HEX);
@@ -100,7 +103,54 @@ void sendStop() {
   SPI.transfer(0x00); // 第二個 byte 固定為 0x00
 
   delayMicroseconds(5);
-  digitalWrite(SS_PIN, HIGH);
+  digitalWrite(SS_Pin, HIGH);
 
   Serial.println("🛑 已發送 STOP 指令，中斷播放或錄音");
+}
+
+bool isRecording() {
+  digitalWrite(SS_Pin, LOW);
+  delayMicroseconds(5);
+
+  SPI.transfer(0x05);     // RD_STATUS
+  SPI.transfer(0x00);     // 固定格式
+
+  byte sr0 = SPI.transfer(0x00);  // 忽略 SR0
+  byte sr1 = SPI.transfer(0x00);  // 讀取 SR1
+
+  digitalWrite(SS_Pin, HIGH);
+
+  bool recording = (sr1 & 0b00001000); // SR1 bit3 = REC
+  Serial.print("錄音狀態：");
+  Serial.println(recording ? "錄音中" : "未錄音");
+  return recording;
+}
+
+
+void fullReset() {
+  Serial.println("⚠️ 開始清除整顆 ISD1700...");
+  
+  // 1. 全部擦除
+  digitalWrite(SS_Pin, LOW);
+  SPI.transfer(0x43);  // G_ERASE 指令
+  SPI.transfer(0x00);
+  digitalWrite(SS_Pin, HIGH);
+
+  delay(500); // 擦除動作會花一點時間
+
+  // 2. RESET
+  digitalWrite(SS_Pin, LOW);
+  SPI.transfer(0x03);  // RESET 指令
+  SPI.transfer(0x00);
+  digitalWrite(SS_Pin, HIGH);
+
+  delay(100);
+
+  // 3. CLR_INT
+  digitalWrite(SS_Pin, LOW);
+  SPI.transfer(0x04);  // CLR_INT 指令
+  SPI.transfer(0x00);
+  digitalWrite(SS_Pin, HIGH);
+
+  Serial.println("✅ 已完成全清除與重置");
 }
