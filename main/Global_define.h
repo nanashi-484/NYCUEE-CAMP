@@ -50,6 +50,7 @@ const int task_Frequency = 8; // 設定高頻任務相對低頻任務的觸發�
 const int SS_Pin = 10;
 const int MISO_Pin = 12;
 const int MOSI_Pin = 11;
+const int SCK_Pin = 13;
 
 int command_current; //目前執行的指令
 
