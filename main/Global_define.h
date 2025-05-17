@@ -45,8 +45,6 @@ const int task_Frequency = 8; // 設定高頻任務相對低頻任務的觸發�
 #define WAIT_TIME 10 // waiting time (ms) after SS=LOW at least 500ns
 #define WAIT_TIME2 100
 
-// SPI通訊
-
 const int SS_Pin = 10;
 const int MISO_Pin = 12;
 const int MOSI_Pin = 11;
@@ -54,7 +52,7 @@ const int MOSI_Pin = 11;
 int command_current; //目前執行的指令
 
 // 按鈕腳位
-const int buttonPins[] = {4, 7, 8, 9, 2};
+const int buttonPins[] = {2, 3, 4, 7, 8, 9}; // PLAY STOP REC ERA FWD RESET
 const int buttonCount = 5;
 
 // 按鈕狀態變數

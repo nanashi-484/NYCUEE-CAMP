@@ -2,26 +2,22 @@
 #include "Button_read.h"
 #include "OLED_control.h"
 
-void setup() {
-
+void setup(){
   Serial.begin(9600);
   setupOLED();
   setupButton();
-
+  setupSPI();
 }
 
-void loop() {
-
-  if(mode == COMMUNICATION){
-
+void loop(){
+  if (mode == COMMUNICATION){
   }
 
-  if(mode == WAITING_COMMAND){
-
+  if (mode == WAITING_COMMAND){
+    ReadButton();
+    sendCommand();
   }
 
-  if(mode == ERROR_MODE){
-
+  if (mode == ERROR_MODE){
   }
-
 }
