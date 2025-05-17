@@ -3,16 +3,20 @@
 
 // 主程式
 enum Mode{
-    ERROR, // 當發生程序無法繼續運行的錯誤，進入ERROR
+    ERROR_MODE, // 當發生程序無法繼續運行的錯誤，進入ERROR
     COMMUNICATION, // 需要與IDS1760 SPI通訊時
     WAITING_COMMAND // 等待使用者輸入
 };
-Mode mode = WAITING_COMMAND;
+Mode mode = WAITING_COMMAND; // 預設進入通訊模式
+
+const char *error_message[] = {""};
 
 int task_Timer = 0;// 主程式任務計時器;
 const int task_Frequency = 8;// 設定高頻任務相對低頻任務的觸發數
 
 // SPI通訊
+
+
 const int SS_Pin = 10;
 const int MISO_Pin = 12;
 const int MOSI_Pin = 11;

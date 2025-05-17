@@ -20,7 +20,7 @@ void loop() {
 
   }
 
-  if(mode == ERROR){
+  if(mode == ERROR_MODE){
 
   }
 
