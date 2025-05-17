@@ -11,11 +11,12 @@ void setup(){
 
 void loop(){
   if (mode == COMMUNICATION){
+    sendCommand();
   }
 
   if (mode == WAITING_COMMAND){
     ReadButton();
-    sendCommand();
+    receiveCommand();
     updateOLED();
   }
 

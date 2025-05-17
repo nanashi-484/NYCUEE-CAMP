@@ -55,14 +55,10 @@ void OLED_message(char *labels[MAX_NUMBER_OF_LINE]){
       break;
     
     case WAITING_COMMAND:
-      labels[0] = "COMMUNICATING... ";
-      snprintf(labels[1], sizeof(labels[1]), "%s:%d", "  command:" , CommandToText());
-      labels[2] = "INSTRUCT: ";
-      snprintf(labels[3], sizeof(labels[3]), "%s:%d", "  " , /*printBinary(command_current)*/"");
-      // labels[0] = "STATUS: ";
-      // labels[1] = "";
-      // labels[2] = "  Ready!";
-      // labels[3] = "";
+      labels[0] = "STATUS: ";
+      labels[1] = "";
+      labels[2] = "  Ready!";
+      labels[3] = "";
       break;
     
     case ERROR_MODE:
@@ -158,8 +154,8 @@ char* CommandToText() {
         break;
     default:
         textOutput = "Unknown Command";  // 預設情況，返回未知指令的字串
-        // errorCode = 1;
-        // mode = ERROR_MODE;
+        errorCode = 1;
+        mode = ERROR_MODE;
         break;
   }
   return textOutput;  // 返回轉換後的文字
