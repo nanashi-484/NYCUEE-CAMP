@@ -48,8 +48,9 @@ const int SS_Pin = 10;
 const int MISO_Pin = 12;
 const int MOSI_Pin = 11;
 
+int command_current;
 // 按鈕腳位
-const int buttonPins[] = {4, 7, 8, 9, 2};
+const int buttonPins[] = {2, 3, 4, 7, 8, 9}; // PLAY STOP REC ERA FWD RESET
 const int buttonCount = 5;
 
 // 按鈕狀態變數
