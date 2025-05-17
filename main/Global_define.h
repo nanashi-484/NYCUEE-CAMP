@@ -53,7 +53,7 @@ int command_current; //目前執行的指令
 
 // 按鈕腳位
 const int buttonPins[] = {2, 3, 4, 7, 8, 9}; // PLAY STOP REC ERA FWD RESET
-const int buttonCount = 5;
+const int buttonCount = 6;
 
 // 按鈕狀態變數
 bool lastButtonStates[buttonCount];
@@ -77,5 +77,23 @@ void serialRead(int &value)
     }
     value = temp_string.toInt();
 }
+
+// 將int轉為binary的string
+// char* printBinary(int num) {
+//     int bits = sizeof(int) * 8; // 計算 int 的位元數，通常是 32 位
+//     char* textOutput = "";
+//     for (int i = bits - 1; i >= 0; i--) {
+//         // 使用位元 AND 檢查第 i 位是否為 1
+//         int bit = (num >> i) & 1;
+//         if(bit){
+//           textOutput = textOutput + '1';
+//         }
+//         else{
+//           textOutput = textOutput + '0';
+//         }
+//     }
+//     Serial.println(textOutput);
+//     return textOutput;
+//   }
 
 #endif

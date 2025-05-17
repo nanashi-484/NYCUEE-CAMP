@@ -6,7 +6,7 @@
 U8G2_SSD1306_128X64_NONAME_1_HW_I2C u8g2(U8G2_R0, /* reset=*/U8X8_PIN_NONE);
 
 // OLED 顯示資訊
-#define USED_OLED_FONT u8g2_font_helvB14_tr // 定義使用的字體
+#define USED_OLED_FONT u8g2_font_timR10_tf // 定義使用的字體
 const int MAX_NUMBER_OF_LINE = 4; // 最大顯示行數
 
 char* CommandToText();
@@ -50,15 +50,19 @@ void OLED_message(char *labels[MAX_NUMBER_OF_LINE]){
     case COMMUNICATION:
       labels[0] = "COMMUNICATING... ";
       snprintf(labels[1], sizeof(labels[1]), "%s:%d", "  command:" , CommandToText());
-      labels[2] = "STATUS: ";
-      snprintf(labels[3], sizeof(labels[3]), "%s:%d", "  " , CommandToText());
+      labels[2] = "INSTRUCT: ";
+      snprintf(labels[3], sizeof(labels[3]), "%s:%d", "  " , command_current);
       break;
     
     case WAITING_COMMAND:
-      labels[0] = "STATUS: ";
-      labels[1] = "";
-      labels[2] = "  Ready!";
-      labels[3] = "";
+      labels[0] = "COMMUNICATING... ";
+      snprintf(labels[1], sizeof(labels[1]), "%s:%d", "  command:" , CommandToText());
+      labels[2] = "INSTRUCT: ";
+      snprintf(labels[3], sizeof(labels[3]), "%s:%d", "  " , /*printBinary(command_current)*/"");
+      // labels[0] = "STATUS: ";
+      // labels[1] = "";
+      // labels[2] = "  Ready!";
+      // labels[3] = "";
       break;
     
     case ERROR_MODE:
@@ -154,8 +158,8 @@ char* CommandToText() {
         break;
     default:
         textOutput = "Unknown Command";  // 預設情況，返回未知指令的字串
-        errorCode = 1;
-        mode = ERROR_MODE;
+        // errorCode = 1;
+        // mode = ERROR_MODE;
         break;
   }
   return textOutput;  // 返回轉換後的文字
