@@ -16,6 +16,7 @@ void loop(){
   if (mode == WAITING_COMMAND){
     ReadButton();
     sendCommand();
+    updateOLED();
   }
 
   if (mode == ERROR_MODE){
