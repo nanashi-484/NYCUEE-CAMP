@@ -5,14 +5,17 @@ void recordFromTo(uint16_t startAddr, uint16_t endAddr);
 void sendStop();
 bool isRecording();
 void fullReset();
+uint16_t readPlayPointer();
 
 void setupSPI() {
     pinMode(SS_Pin, OUTPUT);
     digitalWrite(SS_Pin, HIGH);
     SPI.begin();
-    SPI.beginTransaction(SPISettings(1000000, MSBFIRST, SPI_MODE0));
+    SPI.beginTransaction(SPISettings(100000, MSBFIRST, SPI_MODE2));
+
     fullReset(); // 初始化時全清除
     delay(1000);
+    readPlayPointer();
 }
 
 void receiveCommand() {
@@ -29,10 +32,10 @@ void receiveCommand() {
 void sendCommand() {
 
     if(command_current == PLAY){
-        playFromTo(0x0020, 0x0200); // 播放從 0x0000 到 0xFFFF 的語音
+        playFromTo(0x0010, 0x0200); // 播放從 0x0000 到 0xFFFF 的語音
     }
     else if(command_current == REC){
-        recordFromTo(0x0020, 0x0200); // 錄音從 0x0000 到 0xFFFF 的語音
+        recordFromTo(0x0010, 0x0200); // 錄音從 0x0000 到 0xFFFF 的語音
     }
     else if(command_current == STOP){
         sendStop();
@@ -47,7 +50,7 @@ void sendCommand() {
     
     }
     delay(10);  // 確保指令傳輸完成
-
+    
     mode = WAITING_COMMAND;
 }
 
@@ -117,7 +120,8 @@ bool isRecording() {
 
   byte sr0 = SPI.transfer(0x00);  // 忽略 SR0
   byte sr1 = SPI.transfer(0x00);  // 讀取 SR1
-
+  
+  delayMicroseconds(5); 
   digitalWrite(SS_Pin, HIGH);
 
   bool recording = (sr1 & 0b00001000); // SR1 bit3 = REC
@@ -132,25 +136,54 @@ void fullReset() {
   
   // 1. 全部擦除
   digitalWrite(SS_Pin, LOW);
+  delayMicroseconds(5);
   SPI.transfer(0x43);  // G_ERASE 指令
   SPI.transfer(0x00);
+
+  delayMicroseconds(5);
   digitalWrite(SS_Pin, HIGH);
 
   delay(500); // 擦除動作會花一點時間
 
   // 2. RESET
   digitalWrite(SS_Pin, LOW);
+  delayMicroseconds(5);
   SPI.transfer(0x03);  // RESET 指令
   SPI.transfer(0x00);
+  delayMicroseconds(5);
   digitalWrite(SS_Pin, HIGH);
 
   delay(100);
 
   // 3. CLR_INT
   digitalWrite(SS_Pin, LOW);
+  delayMicroseconds(5);
   SPI.transfer(0x04);  // CLR_INT 指令
   SPI.transfer(0x00);
+  delayMicroseconds(5);
   digitalWrite(SS_Pin, HIGH);
 
   Serial.println("✅ 已完成全清除與重置");
+}
+
+uint16_t readPlayPointer() {
+  digitalWrite(SS_Pin, LOW);
+  delayMicroseconds(5);
+
+  SPI.transfer(0x06); // RD_PLAY_PTR
+  SPI.transfer(0x00); // 固定格式
+
+  byte sr0 = SPI.transfer(0x00); // 狀態暫存器 SR0
+  byte sr1 = SPI.transfer(0x00); // 狀態暫存器 SR1
+
+  byte low = SPI.transfer(0x00);  // P7:P0
+  byte high = SPI.transfer(0x00); // P10:P8
+
+  digitalWrite(SS_Pin, HIGH);
+
+  uint16_t pointer = ((high & 0x07) << 8) | low;
+
+  Serial.print("📍 放音指針地址：0x");
+  Serial.println(pointer, HEX);
+  return pointer;
 }
