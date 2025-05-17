@@ -10,6 +10,7 @@ enum Mode
 };
 Mode mode = WAITING_COMMAND;
 
+int errorCode = 0; // 錯誤代碼，如果發生錯誤則不為0
 int task_Timer = 0;           // 主程式任務計時器;
 const int task_Frequency = 8; // 設定高頻任務相對低頻任務的觸發數
 
