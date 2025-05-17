@@ -4,23 +4,28 @@
 
 void setup(){
   Serial.begin(9600);
-  setupOLED();
+  //setupOLED();
   setupButton();
   setupSPI();
 }
 
 void loop(){
   if (mode == COMMUNICATION){
-    updateOLED();
+    /*
+    ReadButton();
+    if (button_currentValue[1]) { // 偵測 STOP 鍵
+      command_current = STOP;
+      sendCommand();
+      updateOLED();
+    }*/
     sendCommand();
-    delay(1000);
+    updateOLED();
   }
 
   if (mode == WAITING_COMMAND){
-    updateOLED();
     ReadButton();
     receiveCommand();
-    delay(50);
+    updateOLED();
   }
 
   if (mode == ERROR_MODE){

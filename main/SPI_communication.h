@@ -2,20 +2,28 @@
 #include <SPI.h>
 void playFromTo(uint16_t startAddr, uint16_t endAddr);
 void recordFromTo(uint16_t startAddr, uint16_t endAddr);
-void sendStop();
+void sendStop(), play(), Record();
 bool isRecording();
 void fullReset();
 uint16_t readPlayPointer();
+byte checkMemoryStatus();
 
 void setupSPI() {
-    pinMode(SS_Pin, OUTPUT);
-    digitalWrite(SS_Pin, HIGH);
     SPI.begin();
-    SPI.beginTransaction(SPISettings(100000, MSBFIRST, SPI_MODE3));
-
-    fullReset(); // 初始化時全清除
-    delay(1000);
-    readPlayPointer();
+    SPI.setBitOrder(LSBFIRST);
+    SPI.setDataMode(SPI_MODE3);
+    pinMode(SS_Pin, OUTPUT);
+    
+    digitalWrite(SS_Pin,LOW);
+    SPI.transfer(PU); // power up
+    SPI.transfer(0x00); 
+    digitalWrite(SS_Pin,HIGH);
+    
+    delay(100);
+    //fullReset(); // 初始化時全清除
+    delay(100);
+    //readPlayPointer();
+    checkMemoryStatus();
 }
 
 void receiveCommand() {
@@ -23,7 +31,7 @@ void receiveCommand() {
     if (button_currentValue[0] == 1) command_current = PLAY;
     else if (button_currentValue[1] == 1) command_current = STOP;
     else if (button_currentValue[2] == 1) command_current = REC;
-    else if (button_currentValue[3] == 1) command_current = RD_STATUS;
+    else if (button_currentValue[3] == 1) command_current = ERASE;
     else if (button_currentValue[4] == 1) command_current = FWD;
     else if (button_currentValue[5] == 1) command_current = RESET;
     else mode = WAITING_COMMAND;
@@ -32,26 +40,45 @@ void receiveCommand() {
 void sendCommand() {
 
     if(command_current == PLAY){
-        playFromTo(0x0010, 0x0200); // 播放從 0x0000 到 0xFFFF 的語音
+        play();
     }
     else if(command_current == REC){
-        recordFromTo(0x0010, 0x0200); // 錄音從 0x0000 到 0xFFFF 的語音
+        Record();
     }
     else if(command_current == STOP){
         sendStop();
     }
-    else if(command_current == RESET){
+    else if(command_current == ERASE){
         
     }
     else if(command_current == FWD){
        isRecording();
     }
-    else if(command_current == RD_STATUS){
+    else if(command_current == RESET){
     
     }
     delay(10);  // 確保指令傳輸完成
     
     mode = WAITING_COMMAND;
+}
+byte checkMemoryStatus() {
+  digitalWrite(SS_Pin, LOW);
+  delayMicroseconds(5);
+
+  SPI.transfer(0x44); // CHK_MEM 指令
+  SPI.transfer(0x00); // 格式固定
+  byte cmr = SPI.transfer(0x00); // 讀出記憶體狀態
+
+  digitalWrite(SS_Pin, HIGH);
+
+  Serial.print("📦 記憶體狀態 CMR: 0b");
+  Serial.println(cmr, BIN);
+
+  if (cmr & 0b10000000) Serial.println("⚠️ 記憶體已滿 (OVF)");
+  if (cmr & 0b01000000) Serial.println("✅ 有語音資料 (EOM)");
+  if (cmr & 0b00100000) Serial.println("⚠️ 錄音段重疊 (CMP)");
+
+  return cmr;
 }
 
 void recordFromTo(uint16_t startAddr, uint16_t endAddr) {
@@ -75,7 +102,30 @@ void recordFromTo(uint16_t startAddr, uint16_t endAddr) {
   Serial.print(" 到 0x");
   Serial.println(endAddr, HEX);
 }
+void play() {
+  digitalWrite(SS_Pin, LOW);
+  delayMicroseconds(5);
 
+  SPI.transfer(0x40); // PLAY 指令
+  SPI.transfer(0x00); // 格式固定
+
+  delayMicroseconds(5);
+  digitalWrite(SS_Pin, HIGH);
+
+  Serial.println("▶️ 播放從目前播放指針開始的語音段");
+}
+void Record() {
+  digitalWrite(SS_Pin, LOW);
+  delayMicroseconds(5);
+
+  SPI.transfer(REC); // PLAY 指令
+  SPI.transfer(0x00); // 格式固定
+
+  delayMicroseconds(5);
+  digitalWrite(SS_Pin, HIGH);
+
+  Serial.println("▶️ 播放從目前播放指針開始的語音段");
+}
 void playFromTo(uint16_t startAddr, uint16_t endAddr) {
   digitalWrite(SS_Pin, LOW);
   delayMicroseconds(5);
