@@ -61,8 +61,15 @@ void OLED_message(char *labels[MAX_NUMBER_OF_LINE]){
     case WAITING_COMMAND:
       labels[0] = "STATUS: ";
       labels[1] = "----------------------------";
-      
-      labels[2] = "       Ready!";
+        switch (isPlaying()){
+        case true:
+        labels[2] = "      Playing~";
+          break;
+        
+        default:
+          labels[2] = "       Ready!";
+          break;
+      }
       
       labels[3] = "----------------------------";
       break;
