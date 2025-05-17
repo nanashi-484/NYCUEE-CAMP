@@ -85,4 +85,15 @@ void serialRead(int &value)
     value = temp_string.toInt();
 }
 
+char* concatenateStrings(char* dest, const char* str1, const char* str2) {
+    // 先將 str1 複製到 dest 中
+    strcpy(dest, str1);
+//    dest[] = '\0';  // 確保字串結尾
+    
+    // 將 str2 附加到 dest 後面，限制附加長度以避免溢位
+    strcat(dest, str2);
+    
+    return dest;
+}
+
 #endif
