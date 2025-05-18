@@ -13,7 +13,6 @@ void loop(){
   if (mode == COMMUNICATION){
 
     updateOLED();
-
     sendCommand();
     delay(1000);
   }
@@ -22,7 +21,7 @@ void loop(){
     ReadButton();
     updateOLED();
     receiveCommand();
-    delay(50);
+    delay(100);
   }
 
   if (mode == ERROR_MODE){
