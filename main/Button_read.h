@@ -9,7 +9,7 @@ void setupButton(){
   }
 }
 
-// 讀取按鈕數值
+
 void ReadButton(){
   for (int i = 0; i < buttonCount; i++) {
     bool currentState = !digitalRead(buttonPins[i]); // 按下為 LOW，取反

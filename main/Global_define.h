@@ -52,15 +52,19 @@ const int MISO_Pin = 12;
 const int MOSI_Pin = 11;
 const int SCK_Pin = 13;
 
-int command_current; //目前執行的指令
+byte command_current; //目前執行的指令
 
 // 按鈕腳位
 const int buttonPins[] = {2, 3, 4, 7, 8, 9}; // PLAY STOP REC ERA FWD RESET
 const int buttonCount = 6;
 
 // 按鈕狀態變數
+#define LONG_PRESS_TIME 1000  // 長按門檻（毫秒）
+
 bool lastButtonStates[buttonCount];
 bool button_currentValue[buttonCount];
+unsigned long buttonPressedTime[buttonCount]; // 記錄每顆按下的時間
+bool longPressDetected[buttonCount];          // 長按是否已被觸發
 
 //================================================================
 //=========================函數定義================================
