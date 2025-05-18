@@ -9,68 +9,57 @@ uint16_t readPlayPointer();
 byte checkMemoryStatus();
 
 void setupSPI() {
-  SPI.begin();
-  SPI.setBitOrder(LSBFIRST);
-  SPI.setDataMode(SPI_MODE3);
-  pinMode(SS_Pin, OUTPUT);
-
-  digitalWrite(SS_Pin, LOW);
-  SPI.transfer(PU); // power up
-  SPI.transfer(0x00);
-  digitalWrite(SS_Pin, HIGH);
-  //fullReset(); // 初始化時全清除
-  delay(100);
-  //readPlayPointer();
-  checkMemoryStatus();
+    SPI.begin();
+    SPI.setBitOrder(LSBFIRST);
+    SPI.setDataMode(SPI_MODE3);
+    pinMode(SS_Pin, OUTPUT);
+    
+    digitalWrite(SS_Pin,LOW);
+    SPI.transfer(PU); // power up
+    SPI.transfer(0x00); 
+    digitalWrite(SS_Pin,HIGH);
+    
+    delay(100);
+    //fullReset(); // 初始化時全清除
+    delay(100);
+    //readPlayPointer();
+    checkMemoryStatus();
 }
 
 void receiveCommand() {
-  mode = COMMUNICATION;
-  //if (longPressDetected[0] == 1)command_current = SET_PLAY;
-  /*else*/ if (button_currentValue[0] == 1) command_current = PLAY;
-  else if (button_currentValue[1] == 1) command_current = STOP;
-  //else if (longPressDetected[2] == 1) command_current = SET_REC;
-  else if (button_currentValue[2] == 1) command_current = REC;
-  else if (longPressDetected[3] == 1) command_current = G_ERASE; 
-  else if (button_currentValue[3] == 1) command_current = ERASE;
-  else if (button_currentValue[4] == 1) command_current = FWD;
-  else if (button_currentValue[5] == 1) command_current = G_ERASE;
-  else mode = WAITING_COMMAND;
+    mode = COMMUNICATION;
+    if (button_currentValue[0] == 1) command_current = PLAY;
+    else if (button_currentValue[1] == 1) command_current = STOP;
+    else if (button_currentValue[2] == 1) command_current = REC;
+    else if (button_currentValue[3] == 1) command_current = ERASE;
+    else if (button_currentValue[4] == 1) command_current = FWD;
+    else if (button_currentValue[5] == 1) command_current = RESET;
+    else mode = WAITING_COMMAND;
 }
 
 void sendCommand() {
 
-  if (command_current == PLAY) {
-    SendtoISD(command_current);
-  }
-  else if (command_current == SET_PLAY) {
-    playFromTo(0x0010, 0x00A0);
-  }
-  else if (command_current == REC) {
-    SendtoISD(command_current);
-  }
-  else if (command_current == SET_REC) {
-    recordFromTo(0x0010, 0x00A0);
-  }
-  else if (command_current == STOP) {
-    SendtoISD(command_current);
-  }
-  else if (command_current == ERASE) {
-    SendtoISD(command_current);
-  }
-  else if (command_current == G_ERASE) {
-    SendtoISD(command_current);
-    //SendtoISD(CLR_INT);
-  }
-  else if (command_current == FWD) {
-    SendtoISD(command_current);
-  }
-  else if (command_current == RESET) {
-    SendtoISD(command_current);
-  }
-  delay(10);  // 確保指令傳輸完成
-
-  mode = WAITING_COMMAND;
+    if(command_current == PLAY){
+        sendtoISD(command_current);
+    }
+    else if(command_current == REC){
+        sendtoISD(command_current);
+    }
+    else if(command_current == STOP){
+        sendtoISD(command_current);
+    }
+    else if(command_current == ERASE){
+        sendtoISD(command_current);
+    }
+    else if(command_current == FWD){
+        sendtoISD(command_current);
+    }
+    else if(command_current == RESET){
+        sendtoISD(command_current);
+    }
+    delay(10);  // 確保指令傳輸完成
+    
+    mode = WAITING_COMMAND;
 }
 byte checkMemoryStatus() {
   digitalWrite(SS_Pin, LOW);
