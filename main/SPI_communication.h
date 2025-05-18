@@ -40,22 +40,22 @@ void receiveCommand() {
 void sendCommand() {
 
     if(command_current == PLAY){
-        play();
+        sendtoISD(command_current);
     }
     else if(command_current == REC){
-        Record();
+        sendtoISD(command_current);
     }
     else if(command_current == STOP){
-        sendStop();
+        sendtoISD(command_current);
     }
     else if(command_current == ERASE){
-        
+        sendtoISD(command_current);
     }
     else if(command_current == FWD){
-       isRecording();
+        sendtoISD(command_current);
     }
     else if(command_current == RESET){
-    
+        sendtoISD(command_current);
     }
     delay(10);  // 確保指令傳輸完成
     
@@ -102,30 +102,19 @@ void recordFromTo(uint16_t startAddr, uint16_t endAddr) {
   Serial.print(" 到 0x");
   Serial.println(endAddr, HEX);
 }
-void play() {
+
+void SendtoISD(int command_current) {
   digitalWrite(SS_Pin, LOW);
   delayMicroseconds(5);
 
-  SPI.transfer(0x40); // PLAY 指令
+  SPI.transfer(command_current); 
   SPI.transfer(0x00); // 格式固定
 
   delayMicroseconds(5);
   digitalWrite(SS_Pin, HIGH);
-
-  Serial.println("▶️ 播放從目前播放指針開始的語音段");
 }
-void Record() {
-  digitalWrite(SS_Pin, LOW);
-  delayMicroseconds(5);
 
-  SPI.transfer(REC); // PLAY 指令
-  SPI.transfer(0x00); // 格式固定
 
-  delayMicroseconds(5);
-  digitalWrite(SS_Pin, HIGH);
-
-  Serial.println("▶️ 播放從目前播放指針開始的語音段");
-}
 void playFromTo(uint16_t startAddr, uint16_t endAddr) {
   digitalWrite(SS_Pin, LOW);
   delayMicroseconds(5);
@@ -146,19 +135,6 @@ void playFromTo(uint16_t startAddr, uint16_t endAddr) {
   Serial.print(startAddr, HEX);
   Serial.print(" 到 0x");
   Serial.println(endAddr, HEX);
-}
-
-void sendStop() {
-  digitalWrite(SS_Pin, LOW);
-  delayMicroseconds(5);
-
-  SPI.transfer(0x02); // STOP 指令
-  SPI.transfer(0x00); // 第二個 byte 固定為 0x00
-
-  delayMicroseconds(5);
-  digitalWrite(SS_Pin, HIGH);
-
-  Serial.println("🛑 已發送 STOP 指令，中斷播放或錄音");
 }
 
 bool isRecording() {
