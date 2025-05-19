@@ -24,20 +24,6 @@ void setupSPI() {
   checkMemoryStatus();
 }
 
-void receiveCommand() {
-  mode = COMMUNICATION;
-  //if (longPressDetected[0] == 1)command_current = SET_PLAY;
-  /*else*/ if (button_currentValue[0] == 1) command_current = PLAY;
-  else if (button_currentValue[1] == 1) command_current = STOP;
-  //else if (longPressDetected[2] == 1) command_current = SET_REC;
-  else if (button_currentValue[2] == 1) command_current = REC;
-  else if (longPressDetected[3] == 1) command_current = G_ERASE; 
-  else if (button_currentValue[3] == 1) command_current = ERASE;
-  else if (button_currentValue[4] == 1) command_current = FWD;
-  else if (button_currentValue[5] == 1) command_current = G_ERASE;
-  else mode = WAITING_COMMAND;
-}
-
 void sendCommand() {
 
   if (command_current == PLAY) {
