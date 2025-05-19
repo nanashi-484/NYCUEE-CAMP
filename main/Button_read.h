@@ -53,11 +53,10 @@ void ReadButton(){
   }
 }
 
-const int COMMAND_LIST_SHORTPRESS[buttonCount] = { PLAY , STOP , REC , ERASE , FWD , G_ERASE}; // 短按對應的指令
-const int COMMAND_LIST_LONGPRESS[buttonCount]  = { SET_PLAY , 0 , SET_REC , G_ERASE , 0 , 0}; // 長按對應的指令
+const byte COMMAND_LIST_SHORTPRESS[buttonCount] = { PLAY , STOP , REC , ERASE , FWD , G_ERASE}; // 短按對應的指令
+const byte COMMAND_LIST_LONGPRESS[buttonCount]  = { SET_PLAY , RD_STATUS , SET_REC , G_ERASE , RD_STATUS , RD_STATUS}; // 長按對應的指令
 
 void receiveCommand() {
-  mode = COMMUNICATION;
 
   for(int i = 0;i < buttonCount; i++){
     if(button_longPress_Detected[i] == 1 && Button_longPress_Hendeled[i] == 0){ // 如果按鈕處於長按且未被處理
@@ -69,14 +68,4 @@ void receiveCommand() {
       mode = COMMUNICATION;
     }
   }
-  // if (button_longPress_Detected[0] == 1 && Button_longPress_Hendeled[0] == 0)command_current = SET_PLAY;
-  // else if (button_shortPress[0] == 1) command_current = PLAY;
-  // else if (button_shortPress[1] == 1) command_current = STOP;
-  // else if (button_longPress_Detected[2] == 1 && Button_longPress_Hendeled[2] == 0) command_current = SET_REC;
-  // else if (button_shortPress[2] == 1) command_current = REC;
-  // else if (button_longPress_Detected[3] == 1 && Button_longPress_Hendeled[3] == 0) command_current = G_ERASE; 
-  // else if (button_shortPress[3] == 1) command_current = ERASE;
-  // else if (button_shortPress[4] == 1) command_current = FWD;
-  // else if (button_shortPress[5] == 1) command_current = G_ERASE;
-  // else mode = WAITING_COMMAND;
 }

@@ -54,6 +54,9 @@ void sendCommand() {
   else if (command_current == RESET) {
     SendtoISD(command_current);
   }
+  else if (command_current == RD_STATUS){
+    isRecording();
+  }
   delay(10);  // 確保指令傳輸完成
 
   mode = WAITING_COMMAND;
