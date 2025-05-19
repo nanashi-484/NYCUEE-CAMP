@@ -64,7 +64,7 @@ const int buttonCount = 6;
 bool lastButtonStates[buttonCount];
 bool button_shortPress[buttonCount];          // 紀錄是否為短按
 unsigned long buttonPressedTime[buttonCount]; // 記錄每顆按下的時間
-bool Button_longPress_Detected[buttonCount];         // 長按是否已被觸發
+bool button_longPress_Detected[buttonCount];         // 長按是否已被觸發
 bool Button_longPress_Hendeled[buttonCount];         // 長按是否已經被處理過
 
 //================================================================
