@@ -6,7 +6,6 @@
 // 主程式
 enum Mode
 {
-    ERROR_MODE,          // 當發生程序無法繼續運行的錯誤，進入ERROR
     COMMUNICATION,  // 需要與IDS1760 SPI通訊時
     WAITING_COMMAND // 等待使用者輸入
 };

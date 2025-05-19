@@ -75,13 +75,6 @@ void OLED_message(char *labels[MAX_NUMBER_OF_LINE]) {
       labels[2] = "       Ready!";
       labels[3] = "----------------------------";
       break;
-
-    case ERROR_MODE:
-      labels[0] = "ERROR: ";
-      snprintf(labels[1], sizeof(labels[1]), "%s:%d", "  " , ErrorToText(1));
-      snprintf(labels[2], sizeof(labels[2]), "%s:%d", "  " , ErrorToText(2));
-      snprintf(labels[3], sizeof(labels[3]), "%s:%d", "  " , ErrorToText(3));
-      break;
   }
 }
 
@@ -177,33 +170,33 @@ char* CommandToText() {
 }
 
 //根據error code輸出對應的錯誤代碼
-char* ErrorToText(int line = 1/*需要輸出的行數*/) {
-  char* text_line1, text_line2, text_line3, textOutput;
-  switch (errorCode) {
-    case 1:
-      text_line1 = "Unknown Command";
-      text_line2 = "Please chack command sended by SPI";
-      text_line3 = "which sended by SPI";
-      break;
+// char* ErrorToText(int line = 1/*需要輸出的行數*/) {
+//   char* text_line1, text_line2, text_line3, textOutput;
+//   switch (errorCode) {
+//     case 1:
+//       text_line1 = "Unknown Command";
+//       text_line2 = "Please chack command sended by SPI";
+//       text_line3 = "which sended by SPI";
+//       break;
 
-    default:
-      text_line1 = "";
-      text_line2 = "";
-      text_line3 = "";
-      break;
-  }
-  switch (line) {
-    case 1:
-      textOutput = text_line1;
-      break;
-    case 2:
-      textOutput = text_line2;
-      break;
-    case 3:
-      textOutput = text_line3;
-      break;
-    default:
-      textOutput = "";
-      break;
-  }
-}
+//     default:
+//       text_line1 = "";
+//       text_line2 = "";
+//       text_line3 = "";
+//       break;
+//   }
+//   switch (line) {
+//     case 1:
+//       textOutput = text_line1;
+//       break;
+//     case 2:
+//       textOutput = text_line2;
+//       break;
+//     case 3:
+//       textOutput = text_line3;
+//       break;
+//     default:
+//       textOutput = "";
+//       break;
+//   }
+// }
