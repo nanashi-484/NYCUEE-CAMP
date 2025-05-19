@@ -11,7 +11,6 @@ const int MAX_NUMBER_OF_LINE = 4; // 最大顯示行數
 
 char* CommandToText();
 void OLED_message(char *labels[MAX_NUMBER_OF_LINE]);
-char* ErrorToText(int line = 1/*需要輸出的行數*/);
 
 
 // OLED初始設定
@@ -20,8 +19,6 @@ void setupOLED()
   Wire.begin();
   u8g2.begin();
   u8g2.setFont(USED_OLED_FONT);
-  Serial.println(u8g2.getDisplayWidth());
-  Serial.println(u8g2.getDisplayHeight());
   u8g2.firstPage();
   do
   {
@@ -50,7 +47,7 @@ void updateOLED()
 void OLED_message(char *labels[MAX_NUMBER_OF_LINE]) {
   switch (mode) {
     case COMMUNICATION:
-      labels[0] = "Comunicating... ";
+      labels[0] = "Sending...";
       // concatenateStrings(labels[1],"  command: ",CommandToText());
       concatenateStrings(labels[1], "  command: ", CommandToText());
       labels[2] = "INSTRUCT: ";

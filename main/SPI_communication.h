@@ -221,17 +221,26 @@ bool isRecording() {
   digitalWrite(SS_Pin, LOW);
   delayMicroseconds(5);
 
-  SPI.transfer(RD_STATUS);
-  SPI.transfer(0x00);     // 固定格式
+  byte sr0 = SPI.transfer(RD_STATUS);
+  byte sr1 = SPI.transfer(0x00);     // 固定格式
 
-  byte sr0 = SPI.transfer(0x00);  // 忽略 SR0
-  byte sr1 = SPI.transfer(0x00);  // 讀取 SR1
+  byte sr2 = SPI.transfer(0x00);  // 忽略 SR0
+  byte sr3 = SPI.transfer(0x00);  // 讀取 SR1
+
+  byte sr4 = SPI.transfer(0x00);  // 忽略 SR0
+  byte sr5 = SPI.transfer(0x00);  // 讀取 SR1
 
   delayMicroseconds(5);
   digitalWrite(SS_Pin, HIGH);
 
   bool recording = (sr1 & 0b00001000); // SR1 bit3 = REC
-  Serial.print("錄音狀態：");
-  Serial.println(recording ? "錄音中" : "未錄音");
+  SerialPrintByte(sr0);
+  SerialPrintByte(sr1);
+  SerialPrintByte(sr2);
+  SerialPrintByte(sr3);
+  SerialPrintByte(sr4);
+  SerialPrintByte(sr5);
+//   Serial.print("錄音狀態：");
+//   Serial.println(recording ? "錄音中" : "未錄音");
   return recording;
 }

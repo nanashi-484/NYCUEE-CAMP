@@ -100,4 +100,28 @@ char* concatenateStrings(char* dest, const char* str1, const char* str2) {
     return dest;
 }
 
+// 使序列埠印出byte(LSB->MSB)
+void SerialPrintByte(byte in){
+    bool out[8];
+    int a = in;
+    Serial.print(a);
+
+    for (int i = 0 ; i < 7; i++) {
+        if (a%2) {
+            out[i] = 1;
+        } else {
+            out[i] = 0;
+        }
+        a = a/2;
+    }
+
+    for(int t=0 ; t<8 ;t++){
+        if(out[t])
+            Serial.print(1);
+        else
+            Serial.print(0);
+    }
+    Serial.println("");
+}
+
 #endif
