@@ -25,38 +25,41 @@ void setupSPI() {
 }
 
 void sendCommand() {
-
-  if (command_current == PLAY) {
-    SendtoISD(command_current);
-  }
-  else if (command_current == SET_PLAY) {
-    playFromTo(0x0010, 0x00A0);
-  }
-  else if (command_current == REC) {
-    SendtoISD(command_current);
-  }
-  else if (command_current == SET_REC) {
-    recordFromTo(0x0010, 0x00A0);
-  }
-  else if (command_current == STOP) {
-    SendtoISD(command_current);
-  }
-  else if (command_current == ERASE) {
-    SendtoISD(command_current);
-  }
-  else if (command_current == G_ERASE) {
-    SendtoISD(command_current);
-    //SendtoISD(CLR_INT);
-  }
-  else if (command_current == FWD) {
-    SendtoISD(command_current);
-  }
-  else if (command_current == RESET) {
-    SendtoISD(command_current);
-  }
-  else if (command_current == RD_STATUS){
-    isRecording();
-  }
+    switch (command_current) {
+        case PLAY:
+            SendtoISD(command_current);
+            break;
+        case SET_PLAY:
+            playFromTo(0x0010, 0x00A0);
+            break;
+        case REC:
+            SendtoISD(command_current);
+            break;
+        case SET_REC:
+            recordFromTo(0x0010, 0x00A0);
+            break;
+        case STOP:
+            SendtoISD(command_current);
+            break;
+        case ERASE:
+            SendtoISD(command_current);
+            break;
+        case G_ERASE:
+            SendtoISD(command_current);
+            //SendtoISD(CLR_INT);
+            break;
+        case FWD:
+            SendtoISD(command_current);
+            break;
+        case RESET:
+            SendtoISD(command_current);
+            break;
+        case RD_STATUS:
+            isRecording();
+            break;
+        default:
+            break;
+    }
   delay(10);  // 確保指令傳輸完成
 
   mode = WAITING_COMMAND;
