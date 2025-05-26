@@ -23,7 +23,4 @@ void loop(){
     receiveCommand();
     delay(100);
   }
-
-  if (mode == ERROR_MODE){
-  }
 }

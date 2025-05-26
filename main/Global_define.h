@@ -6,7 +6,6 @@
 // 主程式
 enum Mode
 {
-    ERROR_MODE,          // 當發生程序無法繼續運行的錯誤，進入ERROR
     COMMUNICATION,  // 需要與IDS1760 SPI通訊時
     WAITING_COMMAND // 等待使用者輸入
 };
@@ -62,9 +61,10 @@ const int buttonCount = 7;
 #define LONG_PRESS_TIME 1000  // 長按門檻（毫秒）
 
 bool lastButtonStates[buttonCount];
-bool button_currentValue[buttonCount];
+bool button_shortPress[buttonCount];          // 紀錄是否為短按
 unsigned long buttonPressedTime[buttonCount]; // 記錄每顆按下的時間
-bool longPressDetected[buttonCount];          // 長按是否已被觸發
+bool button_longPress_Detected[buttonCount];         // 長按是否已被觸發
+bool Button_longPress_Hendeled[buttonCount];         // 長按是否已經被處理過
 
 //================================================================
 //=========================函數定義================================
@@ -98,6 +98,30 @@ char* concatenateStrings(char* dest, const char* str1, const char* str2) {
     strcat(dest, str2);
     
     return dest;
+}
+
+// 使序列埠印出byte(LSB->MSB)
+void SerialPrintByte(byte in){
+    bool out[8];
+    int a = in;
+    Serial.print(a);
+
+    for (int i = 0 ; i < 7; i++) {
+        if (a%2) {
+            out[i] = 1;
+        } else {
+            out[i] = 0;
+        }
+        a = a/2;
+    }
+
+    for(int t=0 ; t<8 ;t++){
+        if(out[t])
+            Serial.print(1);
+        else
+            Serial.print(0);
+    }
+    Serial.println("");
 }
 
 #endif

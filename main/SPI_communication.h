@@ -24,50 +24,42 @@ void setupSPI() {
   checkMemoryStatus();
 }
 
-void receiveCommand() {
-  mode = COMMUNICATION;
-  //if (longPressDetected[0] == 1)command_current = SET_PLAY;
-  /*else*/ if (button_currentValue[0] == 1) command_current = PLAY;
-  else if (button_currentValue[1] == 1) command_current = STOP;
-  //else if (longPressDetected[2] == 1) command_current = SET_REC;
-  else if (button_currentValue[2] == 1) command_current = REC;
-  else if (longPressDetected[3] == 1) command_current = G_ERASE; 
-  else if (button_currentValue[3] == 1) command_current = ERASE;
-  else if (button_currentValue[4] == 1) command_current = FWD;
-  else if (button_currentValue[5] == 1) command_current = G_ERASE;
-  else mode = WAITING_COMMAND;
-}
-
 void sendCommand() {
-
-  if (command_current == PLAY) {
-    SendtoISD(command_current);
-  }
-  else if (command_current == SET_PLAY) {
-    playFromTo(0x0010, 0x00A0);
-  }
-  else if (command_current == REC) {
-    SendtoISD(command_current);
-  }
-  else if (command_current == SET_REC) {
-    recordFromTo(0x0010, 0x00A0);
-  }
-  else if (command_current == STOP) {
-    SendtoISD(command_current);
-  }
-  else if (command_current == ERASE) {
-    SendtoISD(command_current);
-  }
-  else if (command_current == G_ERASE) {
-    SendtoISD(command_current);
-    //SendtoISD(CLR_INT);
-  }
-  else if (command_current == FWD) {
-    SendtoISD(command_current);
-  }
-  else if (command_current == RESET) {
-    SendtoISD(command_current);
-  }
+    switch (command_current) {
+        case PLAY:
+            SendtoISD(command_current);
+            break;
+        case SET_PLAY:
+            playFromTo(0x0010, 0x00A0);
+            break;
+        case REC:
+            SendtoISD(command_current);
+            break;
+        case SET_REC:
+            recordFromTo(0x0010, 0x00A0);
+            break;
+        case STOP:
+            SendtoISD(command_current);
+            break;
+        case ERASE:
+            SendtoISD(command_current);
+            break;
+        case G_ERASE:
+            SendtoISD(command_current);
+            //SendtoISD(CLR_INT);
+            break;
+        case FWD:
+            SendtoISD(command_current);
+            break;
+        case RESET:
+            SendtoISD(command_current);
+            break;
+        case RD_STATUS:
+            isRecording();
+            break;
+        default:
+            break;
+    }
   delay(10);  // 確保指令傳輸完成
 
   mode = WAITING_COMMAND;
@@ -229,17 +221,26 @@ bool isRecording() {
   digitalWrite(SS_Pin, LOW);
   delayMicroseconds(5);
 
-  SPI.transfer(RD_STATUS);
-  SPI.transfer(0x00);     // 固定格式
+  byte sr0 = SPI.transfer(RD_STATUS);
+  byte sr1 = SPI.transfer(0x00);     // 固定格式
 
-  byte sr0 = SPI.transfer(0x00);  // 忽略 SR0
-  byte sr1 = SPI.transfer(0x00);  // 讀取 SR1
+  byte sr2 = SPI.transfer(0x00);  // 忽略 SR0
+  byte sr3 = SPI.transfer(0x00);  // 讀取 SR1
+
+  byte sr4 = SPI.transfer(0x00);  // 忽略 SR0
+  byte sr5 = SPI.transfer(0x00);  // 讀取 SR1
 
   delayMicroseconds(5);
   digitalWrite(SS_Pin, HIGH);
 
   bool recording = (sr1 & 0b00001000); // SR1 bit3 = REC
-  Serial.print("錄音狀態：");
-  Serial.println(recording ? "錄音中" : "未錄音");
+  SerialPrintByte(sr0);
+  SerialPrintByte(sr1);
+  SerialPrintByte(sr2);
+  SerialPrintByte(sr3);
+  SerialPrintByte(sr4);
+  SerialPrintByte(sr5);
+//   Serial.print("錄音狀態：");
+//   Serial.println(recording ? "錄音中" : "未錄音");
   return recording;
 }

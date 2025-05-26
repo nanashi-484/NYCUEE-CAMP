@@ -11,7 +11,6 @@ const int MAX_NUMBER_OF_LINE = 4; // 最大顯示行數
 
 char* CommandToText();
 void OLED_message(char *labels[MAX_NUMBER_OF_LINE]);
-char* ErrorToText(int line = 1/*需要輸出的行數*/);
 
 
 // OLED初始設定
@@ -20,8 +19,6 @@ void setupOLED()
   Wire.begin();
   u8g2.begin();
   u8g2.setFont(USED_OLED_FONT);
-  Serial.println(u8g2.getDisplayWidth());
-  Serial.println(u8g2.getDisplayHeight());
   u8g2.firstPage();
   do
   {
@@ -50,7 +47,7 @@ void updateOLED()
 void OLED_message(char *labels[MAX_NUMBER_OF_LINE]) {
   switch (mode) {
     case COMMUNICATION:
-      labels[0] = "Comunicating... ";
+      labels[0] = "Sending...";
       // concatenateStrings(labels[1],"  command: ",CommandToText());
       concatenateStrings(labels[1], "  command: ", CommandToText());
       labels[2] = "INSTRUCT: ";
@@ -74,13 +71,6 @@ void OLED_message(char *labels[MAX_NUMBER_OF_LINE]) {
       */
       labels[2] = "       Ready!";
       labels[3] = "----------------------------";
-      break;
-
-    case ERROR_MODE:
-      labels[0] = "ERROR: ";
-      snprintf(labels[1], sizeof(labels[1]), "%s:%d", "  " , ErrorToText(1));
-      snprintf(labels[2], sizeof(labels[2]), "%s:%d", "  " , ErrorToText(2));
-      snprintf(labels[3], sizeof(labels[3]), "%s:%d", "  " , ErrorToText(3));
       break;
   }
 }
@@ -177,33 +167,33 @@ char* CommandToText() {
 }
 
 //根據error code輸出對應的錯誤代碼
-char* ErrorToText(int line = 1/*需要輸出的行數*/) {
-  char* text_line1, text_line2, text_line3, textOutput;
-  switch (errorCode) {
-    case 1:
-      text_line1 = "Unknown Command";
-      text_line2 = "Please chack command sended by SPI";
-      text_line3 = "which sended by SPI";
-      break;
+// char* ErrorToText(int line = 1/*需要輸出的行數*/) {
+//   char* text_line1, text_line2, text_line3, textOutput;
+//   switch (errorCode) {
+//     case 1:
+//       text_line1 = "Unknown Command";
+//       text_line2 = "Please chack command sended by SPI";
+//       text_line3 = "which sended by SPI";
+//       break;
 
-    default:
-      text_line1 = "";
-      text_line2 = "";
-      text_line3 = "";
-      break;
-  }
-  switch (line) {
-    case 1:
-      textOutput = text_line1;
-      break;
-    case 2:
-      textOutput = text_line2;
-      break;
-    case 3:
-      textOutput = text_line3;
-      break;
-    default:
-      textOutput = "";
-      break;
-  }
-}
+//     default:
+//       text_line1 = "";
+//       text_line2 = "";
+//       text_line3 = "";
+//       break;
+//   }
+//   switch (line) {
+//     case 1:
+//       textOutput = text_line1;
+//       break;
+//     case 2:
+//       textOutput = text_line2;
+//       break;
+//     case 3:
+//       textOutput = text_line3;
+//       break;
+//     default:
+//       textOutput = "";
+//       break;
+//   }
+// }
