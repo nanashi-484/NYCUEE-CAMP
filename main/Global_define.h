@@ -55,8 +55,8 @@ const int SCK_Pin = 13;
 byte command_current; //目前執行的指令
 
 // 按鈕腳位
-const int buttonPins[] = {2, 3, 4, 7, 8, 9}; // PLAY STOP REC ERA FWD RESET
-const int buttonCount = 6;
+const int buttonPins[] = {2, 4, 5, 6, 7, 8, 9}; // PLAY STOP REC ERA FWD RESET
+const int buttonCount = 7;
 
 // 按鈕狀態變數
 #define LONG_PRESS_TIME 1000  // 長按門檻（毫秒）
