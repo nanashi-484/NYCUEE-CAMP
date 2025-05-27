@@ -15,7 +15,7 @@ void setupSPI() {
   pinMode(SS_Pin, OUTPUT);
 
   digitalWrite(SS_Pin, LOW);
-  SPI.transfer(PU); // power up
+  SPI.transfer(PU);
   SPI.transfer(0x00);
   digitalWrite(SS_Pin, HIGH);
   //fullReset(); // 初始化時全清除
