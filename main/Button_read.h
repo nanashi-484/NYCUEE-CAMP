@@ -58,11 +58,9 @@ void receiveCommand() {
   for(int i = 0;i < buttonCount; i++){
     if(button_longPress_Detected[i] == 1 && Button_longPress_Hendeled[i] == 0){ // 如果按鈕處於長按且未被處理
       command_current = COMMAND_LIST_LONGPRESS[i];
-      mode = COMMUNICATION;
     }
     if(button_shortPress[i] == 1){
       command_current = COMMAND_LIST_SHORTPRESS[i];
-      mode = COMMUNICATION;
     }
   }
 }

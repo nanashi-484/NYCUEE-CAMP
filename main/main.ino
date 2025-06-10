@@ -1,4 +1,4 @@
-#include "SPI_communication.h"
+#include "Command_logic.h"
 #include "Button_read.h"
 #include "OLED_control.h"
 
