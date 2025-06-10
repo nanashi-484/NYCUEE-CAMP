@@ -6,56 +6,38 @@
 // 主程式
 enum Mode
 {
-    COMMUNICATION,  // 需要與IDS1760 SPI通訊時
+    COMMUNICATION,  // 按下/按住按鈕後處理指令
     WAITING_COMMAND // 等待使用者輸入
 };
 Mode mode = WAITING_COMMAND;
 
-int errorCode = 0; // 錯誤代碼，如果發生錯誤則不為0
 int task_Timer = 0;           // 主程式任務計時器;
 const int task_Frequency = 8; // 設定高頻任務相對低頻任務的觸發數
 
-// SPI通訊
-#define PU 0x01
-#define STOP 0x02
-#define RESET 0x03
-#define CLR_INT 0x04
-#define RD_STATUS 0x05
-#define RD_PLAY_PTR 0x06
-#define PD 0x07
-#define RD_REC_PTR 0x08
-#define DEVID 0x09
-#define PLAY 0x40
-#define REC 0x41
-#define REC_LED 0x51 // record with LED on
-#define ERASE 0x42
-#define G_ERASE 0x43
-#define RD_APC 0x44
-#define WR_APC1 0x45
-#define WR_APC2 0x65
-#define WR_NVCFG 0x46
-#define LD_NVCFG 0x47
-#define FWD 0x48
-#define CHK_MEM 0x49
-#define EXTCLK 0x4A
-#define SET_PLAY 0x80
-#define SET_REC 0x81
-#define SET_REC_LED 0x91 // set record with LED on
-#define SET_ERASE 0x82
+enum Command
+{
+    PLAY,       // 播放
+    G_PLAY,     // 播放全部
+    REC,        // 錄音
+    ERASE,      // 擦除
+    G_ERASE,     // 擦除全部
+    FWD,        // 快轉
+    RESET,      // 重置
+    NULL_COMMAND,       // 空指令
+};
+Command command_current = NULL_COMMAND; // 當前指令
+Command command_previous = NULL_COMMAND; // 前一個指令
 
-#define WAIT_TIME 10 // waiting time (ms) after SS=LOW at least 500ns
-#define WAIT_TIME2 100
-
-const int SS_Pin = 10;
-const int MISO_Pin = 12;
-const int MOSI_Pin = 11;
-const int SCK_Pin = 13;
-
-byte command_current; //目前執行的指令
+// INT腳位
+const int INT_PIN = 3; // INT腳位
+bool INT_state = false; // INT腳位狀態
 
 // 按鈕腳位
-const int buttonPins[] = {2, 4, 5, 6, 7, 8, 9}; // PLAY STOP REC ERA FWD RESET
-const int buttonCount = 7;
+const int buttonPins[] = {2, 4, 6, 7, 8, 9}; // PLAY REC TEMP1 ERASE FWD RESET
+const int buttonCount = 6; // 按鈕數量
+// 按鈕對應的指令
+const Command COMMAND_LIST_SHORTPRESS[buttonCount] = {PLAY, NULL_COMMAND, NULL_COMMAND, ERASE, FWD, RESET}; // 短按對應的指令
+const Command COMMAND_LIST_LONGPRESS[buttonCount] = {G_PLAY, REC, NULL_COMMAND, G_ERASE, NULL_COMMAND, NULL_COMMAND}; // 長按對應的指令
 
 // 按鈕狀態變數
 #define LONG_PRESS_TIME 1000  // 長按門檻（毫秒）

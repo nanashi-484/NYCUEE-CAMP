@@ -53,9 +53,6 @@ void ReadButton(){
   }
 }
 
-const byte COMMAND_LIST_SHORTPRESS[buttonCount] = { PLAY , STOP , REC , ERASE , FWD , G_ERASE}; // 短按對應的指令
-const byte COMMAND_LIST_LONGPRESS[buttonCount]  = { SET_PLAY , RD_STATUS , SET_REC , G_ERASE , RD_STATUS , RD_STATUS}; // 長按對應的指令
-
 void receiveCommand() {
 
   for(int i = 0;i < buttonCount; i++){
